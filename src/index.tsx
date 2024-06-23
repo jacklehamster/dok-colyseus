@@ -2,18 +2,25 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
 
+// import { GameRoom } from "./library/GameRoom";
 import { TournamentRoundApi } from "./library/TournamentRoundApi";
 import http from 'http';
 
+interface TournamentParams {
+  baseUrl: string;
+  clientId: string;
+  clientSecret: string;
+}
+
 export function hookTournamentApi(
-    params: URLSearchParams = new URLSearchParams(globalThis?.location?.search),
-    request?: Partial<http.IncomingMessage>,
-    tournament: Partial<TournamentRoundApi> = new TournamentRoundApi(
-      process.env.ARCADIA_API_URL || "http://127.0.0.1:2567",
-      process.env.ARCADIA_API_CLIENT_ID ?? "",
-      process.env.ARCADIA_API_CLIENT_SECRET ?? ""
-    ),
-  ) {
+  tournamentParams: TournamentParams,
+  params: URLSearchParams = new URLSearchParams(globalThis?.location?.search),
+  request?: Partial<http.IncomingMessage>) {
+  const tournament = new TournamentRoundApi(
+    tournamentParams?.baseUrl,
+    tournamentParams?.clientId,
+    tournamentParams?.clientSecret,
+  );
   const playerId = params.get("playerid") ?? "";
   const tournamentId = params.get("tourneyid") ?? "";
   const token = params.get("otp") ?? "";
@@ -26,10 +33,10 @@ export function hookTournamentApi(
     displayName,
     imageUrl,
     startTournament: () => {
-      tournament.startTournamentRound?.(playerId, tournamentId, token, walletAddress, playerIp);
+      tournament?.startTournamentRound?.(playerId, tournamentId, token, walletAddress, playerIp);
     },
     endTournamentRound: (score: number) => {
-      tournament.endTournamentRound?.(playerId, tournamentId, token, score);
+      tournament?.endTournamentRound?.(playerId, tournamentId, token, score);
     },
   };
 }
