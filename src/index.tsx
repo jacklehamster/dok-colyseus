@@ -6,7 +6,7 @@ import { TournamentRoundApi } from "./library/TournamentRoundApi";
 import http from 'http';
 
 export function hookTournamentApi(
-    params: URLSearchParams = new URLSearchParams(global?.location?.search),
+    params: URLSearchParams = new URLSearchParams(globalThis?.location?.search),
     request?: Partial<http.IncomingMessage>,
     tournament: Partial<TournamentRoundApi> = new TournamentRoundApi(
       process.env.ARCADIA_API_URL || "http://127.0.0.1:2567",
